@@ -24,9 +24,10 @@ const ListingSchema = mongoose.Schema({
   applyLink: {
     type: String,
     required: true
-  },
+  }
+});
 
-UserSchema.methods.serialize = function() {
+ListingSchema.methods.serialize = function() {
   return {
     title: this.title || '',
     description: this.description || '',
