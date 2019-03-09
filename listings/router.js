@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const {User} = require('./models');
+const {Listing} = require('./models');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   Listing
     .find()
     .then(listings => {
-      res.json(posts.map(listing => listing.serialize()));
+      res.json(listings.map(listing => listing.serialize()));
     })
     .catch(err => {
       console.error(err);
@@ -30,8 +30,8 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
-  const requiredFields = ['title', 'content', 'author'];
+router.post('/', jsonParser, (req, res) => {
+  const requiredFields = ['title', 'description', 'category', 'location', 'applyLink'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -44,8 +44,10 @@ router.post('/', (req, res) => {
   Listing
     .create({
       title: req.body.title,
-      content: req.body.content,
-      author: req.body.author
+      description: req.body.description,
+      category: req.body.category,
+      location: req.body.location,
+      applyLink: req.body.applyLink
     })
     .then(listing => res.status(201).json(listing.serialize()))
     .catch(err => {
@@ -69,7 +71,7 @@ router.delete('/:id', (req, res) => {
 });
 
 
-router.put('/:id', (req, res) => {
+router.put('/:id', jsonParser, (req, res) => {
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     res.status(400).json({
       error: 'Request path id and request body id values must match'
@@ -77,7 +79,7 @@ router.put('/:id', (req, res) => {
   }
 
   const updated = {};
-  const updateableFields = ['title', 'content', 'author'];
+  const updateableFields = ['title', 'description', 'category', 'location', 'applyLink'];
   updateableFields.forEach(field => {
     if (field in req.body) {
       updated[field] = req.body[field];

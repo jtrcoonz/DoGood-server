@@ -33,7 +33,8 @@ ListingSchema.methods.serialize = function() {
     description: this.description || '',
     category: this.category || '',
     location: this.location || '',
-    applyLink: this.applyLink || ''
+    applyLink: this.applyLink || '',
+    id: this._id
   };
 };
 
