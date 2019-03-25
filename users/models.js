@@ -5,6 +5,18 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const UserSchema = mongoose.Schema({
+  organizationName: {
+    type: String,
+    required: true
+  },
+  organizationUrl: {
+    type: String,
+    required: true
+  },
+  organizationDescription: {
+    type: String,
+    required: true
+  },
   username: {
     type: String,
     required: true,
@@ -14,15 +26,14 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
 });
 
 UserSchema.methods.serialize = function() {
   return {
+    organizationName: this.organizationName || '',
+    organizationUrl: this.organizationUrl || '',
+    organizationDescription: this.organizationDescription || '',
     username: this.username || '',
-    firstName: this.firstName || '',
-    lastName: this.lastName || ''
   };
 };
 

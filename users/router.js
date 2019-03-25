@@ -10,6 +10,7 @@ const jsonParser = bodyParser.json();
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
+  console.log(req.body);
   const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -22,7 +23,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
+  const stringFields = ['organizationName', 'organizationUrl', 'organizationDescription', 'username', 'password'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -92,11 +93,12 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
+  let {username, password, organizationName = '', organizationUrl = '', organizationDescription = '' } = req.body;
   // Username and password come in pre-trimmed, otherwise we throw an error
   // before this
-  firstName = firstName.trim();
-  lastName = lastName.trim();
+  organizationName = organizationName.trim();
+  organizationUrl = organizationUrl.trim();
+  organizationDescription = organizationDescription.trim();
 
   return User.find({username})
     .count()
@@ -115,18 +117,18 @@ router.post('/', jsonParser, (req, res) => {
     })
     .then(hash => {
       return User.create({
+        organizationName,
+        organizationUrl,
+        organizationDescription,
         username,
-        password: hash,
-        firstName,
-        lastName
+        password: hash
       });
     })
     .then(user => {
       return res.status(201).json(user.serialize());
     })
     .catch(err => {
-      // Forward validation errors on to the client, otherwise give a 500
-      // error because something unexpected has happened
+      console.log(err);
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }
