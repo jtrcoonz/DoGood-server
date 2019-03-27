@@ -1,15 +1,27 @@
 "use strict";
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const passport = require("passport");
 const { Listing } = require("./models");
-
+const jwtAuth = passport.authenticate("jwt", { session: false });
 const router = express.Router();
-
 const jsonParser = bodyParser.json();
 
 router.get("/", (req, res) => {
   Listing.find()
+    .then(listings => {
+      res.json(listings.map(listing => listing.serialize()));
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "something went terribly wrong" });
+    });
+});
+
+router.get("/dashboard", jwtAuth, (req, res) => {
+  Listing.find({
+    user: req.user
+  })
     .then(listings => {
       res.json(listings.map(listing => listing.serialize()));
     })
@@ -28,7 +40,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", jsonParser, (req, res) => {
+router.post("/", jwtAuth, jsonParser, (req, res) => {
   const requiredFields = [
     "title",
     "description",
@@ -50,7 +62,8 @@ router.post("/", jsonParser, (req, res) => {
     description: req.body.description,
     category: req.body.category,
     location: req.body.location,
-    applyLink: req.body.applyLink
+    applyLink: req.body.applyLink,
+    user: req.user
   })
     .then(listing => res.status(201).json(listing.serialize()))
     .catch(err => {
@@ -59,7 +72,7 @@ router.post("/", jsonParser, (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", jwtAuth, (req, res) => {
   Listing.findByIdAndRemove(req.params.id)
     .then(() => {
       res.status(204).json({ message: "success" });
@@ -70,7 +83,7 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", jsonParser, (req, res) => {
+router.put("/:id", jwtAuth, jsonParser, (req, res) => {
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     res.status(400).json({
       error: "Request path id and request body id values must match"
