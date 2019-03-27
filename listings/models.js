@@ -1,13 +1,13 @@
-'use strict';
-const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
+"use strict";
+const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
 
 const ListingSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: true
   },
   description: {
     type: String,
@@ -33,18 +33,16 @@ const ListingSchema = mongoose.Schema({
 
 ListingSchema.methods.serialize = function() {
   return {
-    title: this.title || '',
-    description: this.description || '',
-    category: this.category || '',
-    location: this.location || '',
-    applyLink: this.applyLink || '',
-    date: this.date || '',
+    title: this.title || "",
+    description: this.description || "",
+    category: this.category || "",
+    location: this.location || "",
+    applyLink: this.applyLink || "",
+    date: this.date || "",
     id: this._id
   };
 };
 
+const Listing = mongoose.model("Listing", ListingSchema);
 
-
-const Listing = mongoose.model('Listing', ListingSchema);
-
-module.exports = {Listing};
+module.exports = { Listing };
