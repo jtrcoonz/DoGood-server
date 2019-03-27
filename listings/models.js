@@ -24,6 +24,10 @@ const ListingSchema = mongoose.Schema({
   applyLink: {
     type: String,
     required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -34,6 +38,7 @@ ListingSchema.methods.serialize = function() {
     category: this.category || '',
     location: this.location || '',
     applyLink: this.applyLink || '',
+    date: this.date || '',
     id: this._id
   };
 };
