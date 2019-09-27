@@ -33,7 +33,8 @@ UserSchema.methods.serialize = function() {
     organizationName: this.organizationName || "",
     organizationUrl: this.organizationUrl || "",
     organizationDescription: this.organizationDescription || "",
-    username: this.username || ""
+    username: this.username || "",
+    id: this.id
   };
 };
 

@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const passport = require("passport");
+const bodyParser = require("body-parser");
 
 // Here we use destructuring assignment with renaming so the two variables
 // called router (from ./users and ./auth) have different names
@@ -24,6 +25,7 @@ const app = express();
 
 // Logging
 app.use(morgan("common"));
+app.use(bodyParser.json())
 
 // CORS
 app.use(function(req, res, next) {
@@ -58,6 +60,8 @@ app.use("*", (req, res) => {
 
 // Referenced by both runServer and closeServer. closeServer
 // assumes runServer has run and set `server` to a server object
+app.use(function errorHandler(error, req, res, next) { let response; if (NODE_ENV === 'production') { response = { error: { message: 'server error' } } } else { response = { message: error.message, error } } res.status(500).json(response) });
+
 let server;
 
 function runServer(databaseUrl, port = PORT) {

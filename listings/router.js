@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
 
 router.get("/dashboard", jwtAuth, (req, res) => {
   Listing.find({
-    user: req.user
+    user: req.user.id
   })
     .then(listings => {
       res.json(listings.map(listing => listing.serialize()));
@@ -63,7 +63,7 @@ router.post("/", jwtAuth, jsonParser, (req, res) => {
     category: req.body.category,
     location: req.body.location,
     applyLink: req.body.applyLink,
-    user: req.user
+    user: req.user.id
   })
     .then(listing => res.status(201).json(listing.serialize()))
     .catch(err => {
