@@ -40,6 +40,7 @@ ListingSchema.methods.serialize = function() {
     location: this.location || "",
     applyLink: this.applyLink || "",
     date: this.date || "",
+    user: this.user || "",
     id: this._id
   };
 };

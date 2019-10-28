@@ -8,14 +8,15 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.get("/", (req, res) => {
-  Listing.find()
-    .then(listings => {
-      res.json(listings.map(listing => listing.serialize()));
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "something went terribly wrong" });
-    });
+  Listing.find().populate('user').exec(function (err, listings) {
+    console.log(listings);
+    console.log(err);
+    res.json(listings.map(listing => listing.serialize()));
+  })
+   //err => {
+      //console.error(err);
+      //res.status(500).json({ error: "something went terribly wrong" });
+    //});
 });
 
 router.get("/dashboard", jwtAuth, (req, res) => {
