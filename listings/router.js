@@ -23,13 +23,18 @@ router.get("/dashboard", jwtAuth, (req, res) => {
   Listing.find({
     user: req.user.id
   })
-    .then(listings => {
-      res.json(listings.map(listing => listing.serialize()));
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "something went terribly wrong" });
-    });
+  .populate('user').exec(function (err, listings) {
+    console.log(listings);
+    console.log(err);
+    res.json(listings.map(listing => listing.serialize()));
+  })
+    // .then(listings => {
+    //   res.json(listings.map(listing => listing.serialize()));
+    // })
+    // .catch(err => {
+    //   console.error(err);
+    //   res.status(500).json({ error: "something went terribly wrong" });
+    // });
 });
 
 router.get("/:id", (req, res) => {
